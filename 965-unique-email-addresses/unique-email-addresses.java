@@ -1,36 +1,59 @@
-import java.util.HashSet;
-import java.util.Set;
+class Solution {
+    //Create hashCode for Email :
+    private static int hashCode(String email) {
+        char[] chars = email.toCharArray();
+        int hash = 0;
+        int idx = 0;
+        int domainIdx = email.indexOf('@');
 
-public class Solution {
-    public int numUniqueEmails(String[] emails) {
-        Set<String> uniqueEmails = new HashSet<>(); // Set to store unique email addresses
-        
-        for (String email : emails) {
-            String[] parts = email.split("@"); // Split into local and domain parts
-            String local = parts[0];
-            String domain = parts[1];
-            
-            // Process the local part
-            StringBuilder processedLocal = new StringBuilder();
-            for (char c : local.toCharArray()) {
-                if (c == '+') break; // Ignore everything after the first plus sign
-                if (c != '.') processedLocal.append(c); // Ignore periods
-            }
-            
-            // Combine processed local part with domain
-            String uniqueEmail = processedLocal.toString() + "@" + domain;
-            uniqueEmails.add(uniqueEmail); // Add to set of unique emails
+        // Process local part before domain
+        for (int i = 0; i < domainIdx; i++) {
+            char ch = chars[i];
+            if (ch == '+') break;           // Stop at '+'
+            if (ch == '.') continue;        // Skip periods
+            hash += ch * ++idx;             // Accumulate weighted char values
         }
-        
-        return uniqueEmails.size(); // Return the number of unique emails
+
+        // Include domain part fully
+        for (int i = domainIdx; i < chars.length; i++) {
+            hash += chars[i] * ++idx;
+        }
+
+        return hash;
     }
 
-    public static void main(String[] args) {
-        Solution sol = new Solution();
-        String[] emails1 = {"test.email+alex@leetcode.com", "test.e.mail+bob.cathy@leetcode.com", "testemail+david@lee.tcode.com"};
-        System.out.println(sol.numUniqueEmails(emails1)); // Output: 2
+    public static int numUniqueEmails(String[] emails) {
+        Set<Integer> set = new HashSet<>();
 
-        String[] emails2 = {"a@leetcode.com", "b@leetcode.com", "c@leetcode.com"};
-        System.out.println(sol.numUniqueEmails(emails2)); // Output: 3
+        for (String email : emails) {
+            set.add(hashCode(email));
+        }
+
+        return set.size();
     }
+    
+    
+//     public int numUniqueEmails(String[] emails) {
+//         Set<String> uniqueEmail = new HashSet<>();
+//         for(String email: emails){
+//             uniqueEmail.add(normalize(email));
+//         }
+//         return uniqueEmail.size();
+//     }
+
+//     static String normalize(String email){
+//         int domainInd = email.indexOf('@');
+//         StringBuilder sr = new StringBuilder(email.length());
+
+//         //now we building string
+//         for(int index=0; index<domainInd; index++){
+//             char ch = email.charAt(index);
+//             if(ch=='+') break;
+//             if(ch!='.') sr.append(ch);
+//         }
+//         //now we append domain name
+//         sr.append(email.substring(domainInd));
+
+//         return sr.toString();
+//     }
 }
