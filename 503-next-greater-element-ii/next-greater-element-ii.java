@@ -4,15 +4,14 @@ class Solution {
         int[] res = new int[n];
         Arrays.fill(res, -1);
         Stack<Integer> stack = new Stack<>();
-        for(int i=2*n-1;i>=0;i--){
-            int curr = nums[i%n];
-            while(!stack.isEmpty() && stack.peek() <= curr){
-                stack.pop();
+        for (int i=0;i<2*n;i++) {
+            int curr = nums[i % n];
+            while(!stack.isEmpty() && nums[stack.peek()] < curr) {
+                res[stack.pop()] = curr;
             }
-            if(i<n && !stack.isEmpty()){
-                res[i] = stack.peek();
+            if(i<n){
+                stack.push(i);
             }
-            stack.push(curr);
         }
         return res;
     }
